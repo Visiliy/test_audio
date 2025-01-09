@@ -1,21 +1,23 @@
-def audio_file(file_name, new_format):
-    try:
-        from pydub import AudioSegment
+import requests
+import json
 
-        file_name = str(file_name)
+url = "https://api.api2convert.com/v2/jobs"
 
-        audio_file, old_format = file_name.split(".")
-        print(old_format)
+payload = """{
+  "input": [{
+     "type": "remote",
+   "source": "https://storage.yandexcloud.net/musicbacket/audioToSave751208.mp3"
+  }],
+   "conversion": [{
+   "category": "audio",
+   "target": "opus",
+   "options": {
+       "language_tts": "ru-RU"
+   }
+  }]
+  }"""
+headers = {"x-oc-api-key": "5012110b4afe538504d91639568ecfaa", "Content-Type": "application/json"}
 
-        convert = AudioSegment.from_file(file_name)
+response = requests.request("POST", url, headers=headers, data=payload)
 
-        file_name = file_name.replace(old_format, new_format)
-
-        convert.export(file_name, format=new_format)
-    
-    except Exception as error:
-        print(f"\nError: {error}")
-
-
-audio_file("audioToSave702314.wav", "opus")
-print("OK")
+print(response.text)
